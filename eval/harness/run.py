@@ -67,7 +67,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--claude-append", action="store_true", help="claude_cli: use --append-system-prompt (keeps Claude Code defaults) instead of --system-prompt (replace)")
     p.add_argument("--temperature", type=float, default=1.0, help="sampling temperature (anthropic backend)")
     p.add_argument("--max-tokens", type=int, default=4096, help="max tokens to generate (anthropic backend)")
-    p.add_argument("--timeout", type=int, default=600, help="per-request timeout in seconds (claude_cli backend)")
+    p.add_argument("--timeout", type=int, default=600, help="per-request timeout in seconds (claude_cli backend, default 600s; sosafe backend, default 120s)")
+    p.add_argument("--sosafe-api-key", help="sosafe: API key (default: AI_PLATFORM_API_KEY env var)")
+    p.add_argument("--sosafe-base-url", help="sosafe: base URL (default: AI_PLATFORM_BASE_URL env var or internal dev URL)")
+    p.add_argument("--sosafe-provider", default="bedrock", help="sosafe: provider to use — bedrock or openai (default: bedrock)")
     args = p.parse_args(argv)
 
     prompts = _load_prompts()
@@ -103,6 +106,15 @@ def main(argv: list[str] | None = None) -> int:
             backend_kwargs["model"] = args.model
         backend_kwargs["append"] = args.claude_append
         backend_kwargs["timeout_s"] = args.timeout
+    elif args.backend == "sosafe":
+        if args.sosafe_api_key:
+            backend_kwargs["api_key"] = args.sosafe_api_key
+        if args.sosafe_base_url:
+            backend_kwargs["base_url"] = args.sosafe_base_url
+        if args.model:
+            backend_kwargs["model"] = args.model
+        backend_kwargs["provider"] = args.sosafe_provider
+        backend_kwargs["timeout_s"] = min(args.timeout, 120)
 
     gen = get_backend(args.backend, **backend_kwargs)
 

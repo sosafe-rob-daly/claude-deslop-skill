@@ -72,16 +72,24 @@ Claude-class models.
 
 ```bash
 cd eval
-pip install anthropic   # or skip, if using claude_cli backend
 
 # Generate baseline (no skill) and treated (with SKILL.md as system prompt)
-python -m harness.run baseline --backend claude_cli --label v0
-python -m harness.run treated  --backend claude_cli --label iter-01
+# via SoSafe AI Platform (Bedrock, EU region) — requires VPN + AI_PLATFORM_API_KEY
+AI_PLATFORM_API_KEY=<key> python3 -m harness.run baseline --backend sosafe --model claude-opus-4.6 --label opus-4.6
+AI_PLATFORM_API_KEY=<key> python3 -m harness.run treated  --backend sosafe --model claude-opus-4.6 --label iter-01
+
+# Or via direct Anthropic API (requires ANTHROPIC_API_KEY)
+pip install anthropic
+python3 -m harness.run baseline --backend anthropic --model claude-opus-4-7 --label v0
+python3 -m harness.run treated  --backend anthropic --model claude-opus-4-7 --label iter-01
 
 # Diff them
-python -m harness.report --baseline outputs/baseline-<ts>-v0 \
-                         --treated  outputs/treated-<ts>-iter-01
+python3 -m harness.report --baseline outputs/baseline-<ts>-<label> \
+                           --treated  outputs/treated-<ts>-<label>
 ```
+
+**Current baseline:** Claude Opus 4.6 via SoSafe AI Platform (Bedrock, EU). Regenerate the
+baseline if you switch models — the treated run must use the same model as baseline.
 
 See `eval/README.md` for full backend options and workflow detail.
 

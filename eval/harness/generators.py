@@ -1,7 +1,7 @@
 """Pluggable generation backend. The harness orchestrator depends on the
 Generator interface; subclasses implement actual generation.
 
-Four backends exist:
+Five backends exist:
 
   StubGenerator: returns a pre-saved output from disk. Errors if the file
   isn't there. Useful for validating the scoring pipeline against
@@ -17,6 +17,12 @@ Four backends exist:
   ANTHROPIC_API_KEY required if you're logged in via /login. Each call
   spawns a fresh process, so no cross-prompt context contamination.
 
+  SoSafeGenerator: calls the SoSafe AI Platform REST API, which routes
+  requests through AWS Bedrock (EU region). Requires AI_PLATFORM_API_KEY
+  in environment (or passed explicitly). No extra Python packages needed —
+  uses stdlib urllib. Only accessible on the SoSafe internal network (VPN).
+  Auth header: Authorization. System prompt passed as `instructions` field.
+
   EchoGenerator: returns the prompt itself. Only useful for plumbing tests.
 
 To add another backend (OpenAI, local server, etc.), subclass Generator
@@ -24,8 +30,11 @@ and register it in _BACKENDS.
 """
 
 from __future__ import annotations
+import json
 import os
 import subprocess
+import urllib.error
+import urllib.request
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -174,11 +183,83 @@ class ClaudeCLIGenerator(Generator):
         return result.stdout
 
 
+class SoSafeGenerator(Generator):
+    """Calls the SoSafe AI Platform REST API, routing through AWS Bedrock (EU).
+
+    Requires AI_PLATFORM_API_KEY in environment (or passed as api_key).
+    Only reachable on the SoSafe internal network (VPN required).
+
+    API shape:
+      POST /responses
+      Authorization: <api_key>
+      {"prompt": "...", "model": "claude-sonnet-4.6", "provider": "bedrock",
+       "instructions": "<system prompt>"}   # instructions omitted for baseline
+
+    Response: {"result": "...", "responseId": "...", ...}
+    """
+
+    DEFAULT_BASE_URL = "https://ai-platform.sosafe-dev-internal.de/api"
+    DEFAULT_MODEL = "claude-sonnet-4.6"
+    DEFAULT_PROVIDER = "bedrock"
+
+    def __init__(
+        self,
+        api_key: str | None = None,
+        base_url: str | None = None,
+        model: str = DEFAULT_MODEL,
+        provider: str = DEFAULT_PROVIDER,
+        timeout_s: int = 120,
+    ):
+        self.api_key = api_key or os.environ.get("AI_PLATFORM_API_KEY") or ""
+        self.base_url = (base_url or os.environ.get("AI_PLATFORM_BASE_URL") or self.DEFAULT_BASE_URL).rstrip("/")
+        self.model = model
+        self.provider = provider
+        self.timeout_s = timeout_s
+
+        if not self.api_key:
+            raise RuntimeError(
+                "SoSafeGenerator requires AI_PLATFORM_API_KEY in environment "
+                "or passed as --sosafe-api-key. Only reachable on the SoSafe VPN."
+            )
+
+    def generate(self, prompt: str, system: str = "") -> str:
+        payload: dict = {"prompt": prompt, "model": self.model, "provider": self.provider}
+        if system:
+            payload["instructions"] = system
+
+        data = json.dumps(payload).encode()
+        req = urllib.request.Request(
+            f"{self.base_url}/responses",
+            data=data,
+            headers={
+                "Authorization": self.api_key,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:
+                body = json.loads(resp.read())
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode(errors="replace")[:500]
+            raise RuntimeError(f"SoSafe API HTTP {e.code}: {error_body}") from e
+        except urllib.error.URLError as e:
+            raise RuntimeError(
+                f"SoSafe API unreachable ({e.reason}). Are you on the SoSafe VPN?"
+            ) from e
+
+        if "result" not in body:
+            raise RuntimeError(f"SoSafe API unexpected response: {body}")
+        return body["result"]
+
+
 _BACKENDS: dict[str, type[Generator]] = {
     "stub": StubGenerator,
     "echo": EchoGenerator,
     "anthropic": AnthropicGenerator,
     "claude_cli": ClaudeCLIGenerator,
+    "sosafe": SoSafeGenerator,
 }
 
 

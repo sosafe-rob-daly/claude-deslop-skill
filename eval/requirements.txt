@@ -8,3 +8,7 @@ anthropic>=0.40.0
 # claude_cli backend: no Python dependency.
 # Install Claude Code separately: https://claude.com/claude-code
 # Then run `/login` to authenticate.
+
+# sosafe backend: no Python dependency (uses stdlib urllib).
+# Requires AI_PLATFORM_API_KEY env var and SoSafe VPN access.
+# Set AI_PLATFORM_BASE_URL to override the default dev endpoint.
