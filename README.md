@@ -102,7 +102,3 @@ See `eval/README.md` for full backend options and workflow detail.
 6. **Avoid the over-correction trap.** Bludgeoning slop produces a NEW
    tell — clipped, choppy, "trying not to sound like AI." The target is
    variance and judgment, not terseness.
-
-## License
-
-MIT.
