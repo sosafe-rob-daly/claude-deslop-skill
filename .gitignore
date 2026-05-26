@@ -1,0 +1,32 @@
+# Generated eval artifacts — large and not meaningful as source
+eval/outputs/
+eval/reports/
+eval/samples/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Secrets
+.env
+.env.local
+*.pem

@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "notes": "Eval set for the deslop skill. Biased toward prompts that elicit long-form outputs where slop patterns concentrate. Modes: customer_comms, internal_memo, code_tech, conversational. Includes 4 deliberately thin prompts (tagged calibration_test=true) to verify the skill shortens output when the input has no substance.",
+  "prompts": [
+    {
+      "id": "cc-01-billing-complaint",
+      "mode": "customer_comms",
+      "calibration_test": false,
+      "intent": "Customer is wrong but angry. Tests sycophancy, over-apology, boilerplate closer.",
+      "prompt": "Write a reply to this customer support email:\n\n'I've been a customer for THREE YEARS and you just charged me $480 for a service I never agreed to. This is fraud. I want a full refund and an explanation immediately or I'm disputing with my card company and posting about this everywhere.'\n\nContext you have access to as the support agent: the customer upgraded to the annual Pro plan 11 months ago via a self-serve flow that included an explicit confirmation step and email receipt. The $480 is the annual renewal that auto-billed yesterday. Their account shows the original signup confirmation email was opened. The renewal reminder email sent 14 days ago was not opened. Per policy, annual renewals are non-refundable after 7 days, but managers can grant a pro-rated refund for the unused portion if the customer agrees to downgrade.",
+      "target_length_words": 180
+    },
+    {
+      "id": "cc-02-feedback-acknowledgment",
+      "mode": "customer_comms",
+      "calibration_test": false,
+      "intent": "Long off-topic email needs short focused reply. Tests verbosity inflation and 'thank you for your thoughtful feedback' opening.",
+      "prompt": "A customer just sent a 600-word email mostly about their company's strategy and how our tool fits into it. The one actionable thing they ask: can we add a CSV export to the reports view. We have it on the roadmap for next quarter, no firm date. Write the reply."
+    },
+    {
+      "id": "cc-03-outage-announcement",
+      "mode": "customer_comms",
+      "calibration_test": false,
+      "intent": "Tests hyperbolic framing, over-apologizing, and 'we are committed to' boilerplate.",
+      "prompt": "Write an email to enterprise customers announcing a planned 90-minute maintenance window next Saturday at 02:00 UTC for a database upgrade. The upgrade enables a feature several of them have asked for (point-in-time recovery up to 30 days). During the window, the API will return 503 for write requests; reads will continue to work."
+    },
+    {
+      "id": "cc-04-sla-miss-apology",
+      "mode": "customer_comms",
+      "calibration_test": false,
+      "intent": "Tests over-apology, 'we deeply regret', and padding around a credit offer.",
+      "prompt": "We missed our 4-hour response SLA on a Pro-tier customer's support ticket by 11 hours due to a paging system misconfiguration on our end. The issue (intermittent 502s on their account) has now been resolved. Per policy, SLA misses entitle the customer to a 10% credit on the next invoice. Write the apology and offer."
+    },
+    {
+      "id": "cc-05-thin",
+      "mode": "customer_comms",
+      "calibration_test": true,
+      "intent": "Thin prompt. Tests calibration rule: should produce a one-line clarifying question, not a generic 'reply'.",
+      "prompt": "Reply to this customer."
+    },
+
+    {
+      "id": "im-01-engineering-year-review",
+      "mode": "internal_memo",
+      "calibration_test": false,
+      "intent": "Long context + executive audience. Highest-risk prompt for hyperbolic framing, altitude-shifting, and 'fundamental inflection point' opening.",
+      "prompt": "Write a year-in-review for the engineering team to send to the CTO. Cover the year's work and recommend a focus for next year. Source material (this is everything you have):\n\nQ1: Shipped multi-region read replicas. Migrated CI from Jenkins to GitHub Actions (cut median build time from 14 min to 6 min). One Sev2 incident (cache stampede, 47 min impact).\n\nQ2: Launched the new permissions model (replacing the legacy ACL system, in flight for two years prior). Onboarded 4 engineers. Two Sev2 incidents (one from the permissions launch, one unrelated infra).\n\nQ3: Database upgrade to Postgres 16. Began the event-sourcing migration for the orders service (50% complete by quarter end). One Sev1 (3h impact, root cause: third-party DNS provider). Launched internal developer portal v1.\n\nQ4: Completed event-sourcing migration. Shipped SOC2 Type II readiness work (audit in January). Hiring slowed (1 engineer joined, 2 left). Tech debt sprint in December reduced flaky test rate from 8% to 2%.\n\nOpen risks going into next year: the iOS team is understaffed (2 engineers covering 3 products), the data platform's storage costs are growing 12% MoM, and the auth service still depends on a deprecated identity provider with end-of-life in 18 months."
+    },
+    {
+      "id": "im-02-build-vs-buy-recommendation",
+      "mode": "internal_memo",
+      "calibration_test": false,
+      "intent": "Decision memo. Tests pros/cons enumeration vs actually recommending. Workslop risk.",
+      "prompt": "Write a decision memo on whether to build our own customer-facing analytics dashboard or buy one (top candidates: Metabase Cloud, Mode, Hex). Context: we have 12,000 customers, ~2,000 of them in a tier that would use this. Our backend already exposes the metrics via an internal API. We have one full-time frontend engineer with capacity to dedicate ~30% to this. Buy options range from $2k to $9k per month at our usage. Customers have asked for: filtering, scheduled email reports, CSV export, white-labeling. White-labeling is the major gap in the buy options. Decide and justify."
+    },
+    {
+      "id": "im-03-postmortem",
+      "mode": "internal_memo",
+      "calibration_test": false,
+      "intent": "Small root cause, easy to over-narrate. Tests verbosity and 'lessons learned' boilerplate.",
+      "prompt": "Write a postmortem for a 4-hour outage. Facts: at 14:02 UTC, a deploy to the API gateway included a typo in a YAML config (TCP_TIMEOUT: 3s instead of 30s). All downstream services started timing out. The on-call was paged at 14:08. The rollback button worked but rolled back to a version that also had a (different) bug introduced 6 days ago that hadn't surfaced because the gateway issue was masking it. Total customer impact: 4h 11m of degraded service. Action items already agreed: (1) add YAML schema validation in CI for gateway configs, (2) audit the last 2 weeks of deploys for masked bugs, (3) require manual smoke test after any rollback that crosses more than 1 deploy boundary."
+    },
+    {
+      "id": "im-04-team-quarterly-review",
+      "mode": "internal_memo",
+      "calibration_test": false,
+      "intent": "Tests the altitude-shifting tendency in summaries with multiple bullet types.",
+      "prompt": "Write the data platform team's Q3 review for the VP of Engineering. Facts: shipped the new ingestion pipeline (handles 3x previous throughput at 60% of previous cost). Backfilled 18 months of historical data into the new schema. Two engineers gave talks at external conferences. One key engineer (the original architect of the ingestion pipeline) gave notice in week 11 of the quarter. Customer-facing reliability of the data layer was 99.97% (SLO is 99.9%). Q4 focus is ML feature store v1, but the team's exposure to the departing engineer's knowledge is now the top risk."
+    },
+    {
+      "id": "im-05-thin",
+      "mode": "internal_memo",
+      "calibration_test": true,
+      "intent": "Thin prompt for a memo. Tests calibration: model should ask what specifically, not invent a Q4 strategy.",
+      "prompt": "Write the Q4 strategy memo."
+    },
+
+    {
+      "id": "ct-01-explain-pooling",
+      "mode": "code_tech",
+      "calibration_test": false,
+      "intent": "Technical explanation. Tests over-explanation, 'step by step let me walk you through', verbose intros.",
+      "prompt": "A junior engineer on the team asks: 'I keep seeing PgBouncer come up in incident reviews. Can you explain how connection pooling works in our setup and why it matters?' Our setup: PgBouncer in transaction pooling mode, sitting between the app servers and Postgres. ~200 app processes, 30 PgBouncer connections to Postgres. Write the explanation."
+    },
+    {
+      "id": "ct-02-cli-readme",
+      "mode": "code_tech",
+      "calibration_test": false,
+      "intent": "Documentation. Tests boilerplate sections, over-headerizing, 'Welcome to...' intros.",
+      "prompt": "Write the README for an internal CLI tool called `kctx`. It wraps `kubectl` for our org's clusters: handles auth (via SSO), sets the right namespace based on the repo you're in, and provides a few shortcuts (`kctx logs <service>` tails logs across pods, `kctx exec <service>` shells into one pod with the right context). Installed via Homebrew: `brew install internal/tools/kctx`. Source repo is internal."
+    },
+    {
+      "id": "ct-03-migration-guide",
+      "mode": "code_tech",
+      "calibration_test": false,
+      "intent": "Migration docs. Tests filler sections like 'Why we made this change' that no one needs.",
+      "prompt": "Document the migration path from our API v1 to v2 for external developers. Breaking changes: (1) all timestamps are now RFC3339 strings instead of unix epoch integers, (2) the `user` field on responses is now nested under `actor.user` to make room for service accounts, (3) pagination uses cursors instead of page numbers. The v1 API stays available for 12 months. We provide a compat-mode header `X-API-Compat: v1` that translates v2 responses back to v1 shape for one of the three changes (timestamps) but not the other two. SDK auto-upgrades are available for Python and Node; Ruby and Go need manual migration."
+    },
+    {
+      "id": "ct-04-code-review",
+      "mode": "code_tech",
+      "calibration_test": false,
+      "intent": "Tests sycophancy in code review ('great work overall!'), padding the real issues, and over-headerizing the comments.",
+      "prompt": "You're reviewing a 200-line PR. Three real issues to flag: (1) the new retry loop catches a bare `Exception` and will swallow KeyboardInterrupt, (2) the database query inside the loop should be batched (currently does N queries where 1 would work), (3) a new dependency was added but not pinned in requirements.txt. Write the review."
+    },
+    {
+      "id": "ct-05-thin",
+      "mode": "code_tech",
+      "calibration_test": true,
+      "intent": "Thin documentation prompt. Tests calibration.",
+      "prompt": "Write some documentation."
+    },
+
+    {
+      "id": "qa-01-postgres-vs-dynamo",
+      "mode": "conversational",
+      "calibration_test": false,
+      "intent": "The exemplar prompt from SKILL.md. Direct compare: does the skill produce a recommendation or a pros/cons tour?",
+      "prompt": "Should we use Postgres or DynamoDB for the new event log service?"
+    },
+    {
+      "id": "qa-02-background-jobs",
+      "mode": "conversational",
+      "calibration_test": false,
+      "intent": "Open-ended architecture question. Tests workslop tendency to enumerate options without recommending.",
+      "prompt": "What's the best way to handle background jobs in our stack? We're on Python/FastAPI, Postgres, deployed on Kubernetes. Current scale: ~200 jobs per minute, mostly under 5 seconds each, a few long-running ones (up to 10 minutes). We don't have a job queue yet; today these run as fire-and-forget tasks in the API process, which is starting to bite us during deploys."
+    },
+    {
+      "id": "qa-03-rate-limiting",
+      "mode": "conversational",
+      "calibration_test": false,
+      "intent": "Open prompt. Tests altitude-shifting (will it bounce between 'philosophically rate limiting is about...' and tactical specifics).",
+      "prompt": "Why is rate limiting so hard to get right?"
+    },
+    {
+      "id": "qa-04-microservices",
+      "mode": "conversational",
+      "calibration_test": false,
+      "intent": "Loaded architecture question. Tests pros/cons reflex and hyperbolic framing.",
+      "prompt": "Is microservices the right architecture for us? We're a 22-engineer company, currently on a single Django monolith with about 180k lines of code. The monolith works fine but deploy contention is starting to slow us down (queue of ~6 PRs deep most afternoons)."
+    },
+    {
+      "id": "qa-05-thin",
+      "mode": "conversational",
+      "calibration_test": true,
+      "intent": "The thinnest possible prompt. Tests calibration rule absolutely.",
+      "prompt": "Thoughts?"
+    },
+    {
+      "id": "qa-06-deeply-thin",
+      "mode": "conversational",
+      "calibration_test": true,
+      "intent": "Vague request with implied subject. Tests whether model asks for specifics or invents them.",
+      "prompt": "Can you give me your take on this?"
+    }
+  ]
+}

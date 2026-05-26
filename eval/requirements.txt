@@ -1,0 +1,10 @@
+# Core harness has no required deps (pure stdlib).
+# Install only what your chosen backend needs:
+
+# Anthropic backend + judge-model pass.
+# Required for: `--backend anthropic` and `python -m harness.judge ...`
+anthropic>=0.40.0
+
+# claude_cli backend: no Python dependency.
+# Install Claude Code separately: https://claude.com/claude-code
+# Then run `/login` to authenticate.
