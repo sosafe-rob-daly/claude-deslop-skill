@@ -47,6 +47,8 @@ One caveat per claim, maximum. Hedging compounds: each "however," "that said," "
 
 Delete any sentence that doesn't change what the reader does or believes. The easiest target is the structuring sentence ("In this section I'll cover..."). The next-easiest is the recap sentence at the end of a section. Both can be cut without loss.
 
+Watch for present-participle padding: tacking "highlighting X," "underscoring Y," "symbolizing Z," "contributing to W" onto the end of a sentence to simulate analytical depth. The clause almost never adds information the sentence didn't already carry. Cut it or fold the content in as a real sentence.
+
 Don't manufacture executive summaries. Hyperbolic framing in summaries ("this represents a fundamental inflection point," "the team has not just shipped, they've reshaped...") is the model substituting epic register for editorial judgment. The fix is to write the summary as a factual lede: what was done, what it enables, what's next. The reader supplies the significance.
 
 ## Curated negatives
@@ -68,6 +70,8 @@ These survive after the cause-level rules are followed. Each is here because it 
 13. **Bullets under ~8 words each**: prose pretending to be a list.
 14. **Restating the prompt as the opening sentence**: wastes the load-bearing position.
 15. **Stacked caveats ("however... that said... of course...")**: caveat compounding. One caveat max.
+16. **"Serves as / stands as / marks / represents"** in place of a simple copula: "Gallery 825 serves as our exhibition space" → "Gallery 825 is our exhibition space." Use *is* and *are*; reserve the elaborate constructions for when they're doing real work.
+17. **"At its core / the real question is / what really matters / the heart of the matter"**: persuasive authority framing that pretends to cut through noise to a deeper truth, then restates an ordinary point with extra ceremony. Cut the frame; just make the point.
 
 ## Contrastive exemplars
 
@@ -105,6 +109,14 @@ What changed: "Honest" as a modifier is decorative; it signals candor instead of
 
 What changed: the *after* answers the question. It replaces the pros-and-cons tour with a recommendation and the falsifiable condition that would change it. Cut "Great question," "each with their own strengths," "the right choice depends on...," and the closing meta-advice to "consider each factor carefully" (which tells the reader to do their own work).
 
+## Voice calibration (optional)
+
+If the user provides a writing sample — their own previous writing — read it before drafting and match their voice in the output. Note their sentence length patterns, word choice register, how they open paragraphs, punctuation habits, and how they handle transitions. Replace AI patterns with patterns from the sample, not with generic clean prose.
+
+How to invoke: "Use the deslop skill. Here's a sample of my writing for voice matching: [sample]" or point to a file.
+
+When no sample is provided, default to varied, direct prose: concrete verbs, mixed sentence lengths, opinions stated plainly.
+
 ## Second-pass self-edit
 
 If you have the budget for a revision pass, run it. Draft fast, then:
@@ -115,7 +127,7 @@ If you have the budget for a revision pass, run it. Draft fast, then:
 4. **Delete any sentence that doesn't change what the reader does or believes.** Structuring sentences and recap sentences first.
 5. **Replace "to be" verbs and nominalizations with active verbs.** (McCloskey.)
 6. **Count em-dashes.** If over one per 300 words, replace the weakest.
-7. **Check the tics.** Search for "honest," "not just X — Y," "vastly/incredibly/truly," "feel free to," "great question." If any feel like rhythm rather than meaning, cut.
+7. **Check the tics.** Search for "honest," "not just X — Y," "vastly/incredibly/truly," "feel free to," "great question," "serves as/stands as," "at its core/the real question is," and trailing "-ing" clauses. If any feel like rhythm rather than meaning, cut.
 8. **Check altitude consistency.** Does the piece shift register (epic → tactical → philosophical) more than once? Pick one.
 
 ## The over-correction trap
