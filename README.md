@@ -33,6 +33,12 @@ self-positioning ("to be honest," "let me be direct"), altitude-shifting in
 summaries — rather than maintaining a banned-word list. It calibrates output
 length to the substance of the input, not to the appearance of completeness.
 
+It also supports **voice calibration**: pass a sample of your own writing with
+the invocation and it will match your voice rather than defaulting to generic
+clean prose.
+
+> "Rewrite this using the deslop skill. Here's a sample of my writing: [sample]"
+
 See `skill/SKILL.md` for the full rules.
 
 ## Install as a Claude Code skill
@@ -47,26 +53,22 @@ Then in any Claude Code session, invoke with a trigger phrase:
 > "Write a Q4 strategy memo using our deslop skill"
 > "Reply to this customer email. Apply deslop."
 
-## Measured effect (Claude, 21-prompt eval set)
-
-Reply-only metrics (Insight-block contamination from Claude Code stripped):
+## Measured effect (Claude Opus 4.6, 21-prompt eval set)
 
 | Metric | Baseline | Treated | Δ |
 |---|---|---|---|
-| Total reply words | 12,765 | 6,155 | **-52%** |
-| Slop tic count (sum) | 33 | 7 | **-79%** |
-| Em-dashes per 300w | 4.7 | 1.6 | **-65%** |
-| Headers (avg per output) | 4.9 | 1.5 | -70% |
-| Bullets (avg per output) | 16.8 | 6.5 | -61% |
-| Over-correction guardrail trips | 0 | 0 | none |
+| Words (avg per output) | 530 | 256 | **-52%** |
+| Slop tic count (avg per output) | 0.9 | 0.4 | **-50%** |
+| Headers (avg per output) | 10.9 | 1.3 | **-88%** |
+| Bullets (avg per output) | 12.0 | 1.6 | **-87%** |
+| Calibration tests passed | — | — | **4/5** |
+| Over-correction guardrail trips | — | — | **0** |
 
-19 of 21 prompts produced visibly less sloppy output. No over-correction
-flagged. See `eval/reports/` for the full per-prompt and per-tic breakdown.
+All 21 prompts scored. No over-correction flagged. See `eval/reports/` for the
+full per-prompt and per-tic breakdown.
 
-A parallel test on Qwen 2.5 72B via MLX showed only -13% word reduction and
-a calibration regression — open-weight models with shorter system-prompt
-adherence don't follow the skill faithfully. The skill is designed for
-Claude-class models.
+The skill is designed for Claude-class models. Open-weight models with weaker
+system-prompt adherence follow the rules less faithfully.
 
 ## Run the eval yourself
 
