@@ -29,6 +29,8 @@ Active voice with concrete verbs. Replace "is being implemented" with "we're imp
 
 Prose by default. Use lists only when the content is genuinely list-shaped: parallel, independent, three or more items. A two-item list is almost always a sentence. A one-item list is never a list. Bullets shorter than about eight words are usually prose dressed as a list.
 
+The "prose by default" rule applies to connected argument and narrative — not to data-heavy enumeration. When the content is a set of parallel facts the reader needs to scan and reference individually (statistics, company names, programmes, benchmarks), a structured list is more readable than prose compression, even if it uses more words. Squeezing ten data points into a single sentence trades one readability problem for another. The goal is clarity, not density.
+
 Don't headerize short outputs. Headers signal navigation; under roughly 400 words you don't need navigation. Section headers on a short response are a tell that the model is performing thoroughness rather than communicating.
 
 Lead with the answer. The first sentence should be load-bearing. No throat-clearing ("Great question," "Let me think about this carefully," "Looking at this..."). Don't restate the prompt; the reader knows what they asked.
@@ -108,6 +110,22 @@ What changed: "Honest" as a modifier is decorative; it signals candor instead of
 > **After:** Postgres, unless you expect to sustain over ~50k writes per second or need single-digit-millisecond reads at 100M+ items. Your service description suggests relational data and moderate scale, where Postgres's query flexibility and ecosystem outweigh DynamoDB's operational simplicity.
 
 What changed: the *after* answers the question. It replaces the pros-and-cons tour with a recommendation and the falsifiable condition that would change it. Cut "Great question," "each with their own strengths," "the right choice depends on...," and the closing meta-advice to "consider each factor carefully" (which tells the reader to do their own work).
+
+### 5. Prose compression vs. structured enumeration
+
+> **Before (over-compressed):** The multinational engineering base includes Critical TechWorks (BMW JV, 3,000+), Siemens (3,000+), Natixis (~3,000), Bosch (3,000+ in Braga), BNP Paribas (5,000+ campus), Google (1,300+), plus Cloudflare, Revolut, Mercedes-Benz.io, VW Digital, Airbus, Amgen.
+>
+> **After (structured):**
+> Major engineering employers:
+> - Critical TechWorks (BMW JV) — 3,000+
+> - Siemens — 3,000+
+> - Bosch (Braga) — 3,000+
+> - BNP Paribas — 5,000+
+> - Natixis — ~3,000
+> - Google — 1,300+
+> - Cloudflare, Revolut, Mercedes-Benz.io, VW Digital, Airbus, Amgen
+
+What changed: the data is genuinely list-shaped — parallel, independent, scannable. Forcing it into a comma chain makes it harder to read without making it shorter in any meaningful sense.
 
 ## Voice calibration (optional)
 

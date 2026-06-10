@@ -68,7 +68,14 @@
       "prompt": "Write the data platform team's Q3 review for the VP of Engineering. Facts: shipped the new ingestion pipeline (handles 3x previous throughput at 60% of previous cost). Backfilled 18 months of historical data into the new schema. Two engineers gave talks at external conferences. One key engineer (the original architect of the ingestion pipeline) gave notice in week 11 of the quarter. Customer-facing reliability of the data layer was 99.97% (SLO is 99.9%). Q4 focus is ML feature store v1, but the team's exposure to the departing engineer's knowledge is now the top risk."
     },
     {
-      "id": "im-05-thin",
+      "id": "im-05-data-dense-briefing",
+      "mode": "internal_memo",
+      "calibration_test": false,
+      "intent": "Data-rich enumeration. Tests whether the skill uses structured lists for parallel facts rather than compressing them into dense, illegible prose. A correct treated output uses lists for the enumerable data (employers, stats, companies) and prose only for connected argument.",
+      "prompt": "Write a briefing note for our talent acquisition team on Lisbon as a potential engineering hub for senior hires. Cover: the major tech employers and approximate engineering headcount, the startup ecosystem (notable companies and scale), typical senior software engineer compensation, quality-of-life factors relevant to relocation, and the main hiring challenges we should anticipate. Keep it factual and scannable — this will be used as a reference doc, not read start to finish."
+    },
+    {
+      "id": "im-06-thin",
       "mode": "internal_memo",
       "calibration_test": true,
       "intent": "Thin prompt for a memo. Tests calibration: model should ask what specifically, not invent a Q4 strategy.",
